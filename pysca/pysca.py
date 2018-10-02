@@ -1071,8 +1071,8 @@ def focus(device, action, speed=None, zoom=None, blocking=False):
 
         # Mechanism to convert the actions accepted by the 'zoom' command into Visca codes
         actions2codes = { FOCUS_ACTION_STOP: lambda speed: VISCA_FOCUS_STOP,
-                          FOCUS_ACTION_NEAR: lambda speed: VISCA_FOCUS_NEAR if speed is None else VISCA_FOCUS_NEAR_SPEED | speed,
-                          FOCUS_ACTION_FAR: lambda speed: VISCA_FOCUS_FAR if speed is None else VISCA_FOCUS_FAR_SPEED | speed }
+                          FOCUS_ACTION_NEAR: lambda speed: VISCA_FOCUS_NEAR if speed is None else VISCA_FOCUS_NEAR | speed,
+                          FOCUS_ACTION_FAR: lambda speed: VISCA_FOCUS_FAR if speed is None else VISCA_FOCUS_FAR | speed }
 
         if action == FOCUS_ACTION_NEAR or action == FOCUS_ACTION_FAR:
                 # Be flexible about the values that can be passed to 'speed',
