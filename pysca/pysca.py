@@ -995,25 +995,13 @@ def clear_commands(dest):
 
 
 def __cmd_cam(device, *parts, **kwargs):
-        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_CAMERA, *parts, **kwargs)
-        if retval == None:
-                return
-        else:
-                return retval.parse_error()
+        __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_CAMERA, *parts, **kwargs)
 
 def __cmd_pt(device, *parts, **kwargs):
-        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_PAN_TILTER, *parts, **kwargs)
-        if retval == None:
-                return
-        else:
-                return retval.parse_error()
+        __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_PAN_TILTER, *parts, **kwargs)
 
 def __cmd_dis(device, *parts, **kwargs):
-        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_DISPLAY, *parts, **kwargs)
-        if retval == None:
-                return
-        else:
-                return retval.parse_error()
+        __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_DISPLAY, *parts, **kwargs)
 
 
 # POWER control
