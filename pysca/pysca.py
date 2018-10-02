@@ -180,6 +180,11 @@ VISCA_BGAIN_UP=0x02
 VISCA_BGAIN_DOWN=0x03
 VISCA_BGAIN_VALUE=0x44
 
+GAIN_ACTION_RESET='reset'
+GAIN_ACTION_UP='up'
+GAIN_ACTION_DOWN='down'
+GAIN_ACTION_VALUE='value'
+
 VISCA_AUTO_EXPOSURE=0x39
 VISCA_AUTO_EXPOSURE_FULL_AUTO=0x00
 VISCA_AUTO_EXPOSURE_MANUAL=0x03
@@ -1227,11 +1232,55 @@ def trigger_wb(device, blocking=False):
 
 
 def set_red_gain(device, action, blocking=False):
-        raise NotImplementedError()
+        """
+        Set red gain.
+        The action performed depends on the value of the second parameter:
+           * If up, increase the red gain
+           * If down, decrease the red gain
+           * If reset, reset the red gain
+        """
+        # __cmd_cam(device, VISCA_EXPOSURE_COMP, VISCA_EXPOSURE_COMP_ON, blocking=blocking)
+
+        try:
+                if action == GAIN_ACTION_UP:
+                        __cmd_cam(device, VISCA_RGAIN, VISCA_RGAIN_UP, blocking=blocking)
+                elif action == GAIN_ACTION_DOWN:
+                        __cmd_cam(device, VISCA_RGAIN, VISCA_RGAIN_DOWN, blocking=blocking)
+                elif action == GAIN_ACTION_RESET:
+                        __cmd_cam(device, VISCA_RGAIN, VISCA_RGAIN_RESET, blocking=blocking)
+
+        except ValueError as e:
+                e.message = "Select an option {0} {1} or {2}" \
+                            "when adjusting the red gain".format(GAIN_ACTION_UP,
+                                                                 GAIN_ACTION_DOWN,
+                                                                 GAIN_ACTION_RESET)
+                raise
 
 
 def set_blue_gain(device, action, blocking=False):
-        raise NotImplementedError()
+        """
+        Set red gain.
+        The action performed depends on the value of the second parameter:
+           * If up, increase the red gain
+           * If down, decrease the red gain
+           * If reset, reset the red gain
+        """
+        # __cmd_cam(device, VISCA_EXPOSURE_COMP, VISCA_EXPOSURE_COMP_ON, blocking=blocking)
+
+        try:
+                if action == GAIN_ACTION_UP:
+                        __cmd_cam(device, VISCA_BGAIN, VISCA_BGAIN_UP, blocking=blocking)
+                elif action == GAIN_ACTION_DOWN:
+                        __cmd_cam(device, VISCA_BGAIN, VISCA_BGAIN_DOWN, blocking=blocking)
+                elif action == GAIN_ACTION_RESET:
+                        __cmd_cam(device, VISCA_BGAIN, VISCA_BGAIN_RESET, blocking=blocking)
+
+        except ValueError as e:
+                e.message = "Select an option {0} {1} or {2}" \
+                            "when adjusting the blue gain".format(GAIN_ACTION_UP,
+                                                                  GAIN_ACTION_DOWN,
+                                                                  GAIN_ACTION_RESET)
+                raise
 
 
 def set_ae_mode(device, mode, blocking=False):
