@@ -120,3 +120,9 @@ Bug reports, bug fixes, improvements and the likes are much appreciated.
 Rubén Pérez Vázquez ([ruben.perez@uni-koeln.de](mailto:ruben.perez@uni-koeln.de))
 
 This library was done as part of my work in the [_Regionales Rechenzentrum_](http://rrzk.uni-koeln.de/) at the [University of Cologne](http://www.portal.uni-koeln.de/uoc_home.html?&L=1)
+
+
+### More information ###
+
+This is a fork of Pysca library. Original repository can be found from https://bitbucket.org/uni-koeln/pysca
+
