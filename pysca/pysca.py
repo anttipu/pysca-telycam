@@ -598,9 +598,6 @@ class Socket(object):
                                 self.__status = Socket.READY
                                 # Signal the packet reception
                                 self.__cond.notify_all()
-                        else:
-                                raise ViscaSocketStatusError("Socket {} received packet '{}', but was in unexpected status {}"\
-                                                             .format(self.__number, packet, self.__status))
 
 
 class Device(object):
@@ -665,7 +662,7 @@ class Device(object):
                         packet = Packet.from_parts(0, self.address, *payload)
                         self.__sockets[0].wait_for_response(packet)
                         self.__send(packet)
-                        response = self.__sockets[0].get_response(1)
+                        response = self.__sockets[0].get_response(0.1)
                         if response != None and response.type == VISCA_RESPONSE_ACK and kwargs["blocking"]:
                                 return self.__sockets[response.socket].get_response()
                         else:
