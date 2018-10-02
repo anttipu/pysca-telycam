@@ -23,12 +23,16 @@ import os
 import select
 import threading
 import Queue
+import datetime
+import time
 
 
 # Timeout for read and write, in seconds
 # TODO: More timeouts?
 PORT_TIMEOUT = 5
 RESPONSE_TIMEOUT = 30
+time_a = datetime.datetime.now()
+command_tuple = ( -1, -1 )
 
 # This is the default "offset" for the 'set address' command.
 # According to the H-100 documentation, it is always one.
@@ -611,7 +615,49 @@ class Device(object):
                 # The handler used to send the requests to the device
                 self.__send = send_handler
 
+        def wait(self, *payload):
+                global time_a
+                global command_tuple
+                time_b = datetime.datetime.now()
+                diff = time_b - time_a
+                diff_ms = (diff.days * 86400000) + (diff.seconds * 1000) + (diff.microseconds / 1000)
+                wait_time_ms = 0
+
+                if command_tuple[0] == VISCA_COMMAND:
+                        if command_tuple[1] == VISCA_CATEGORY_CAMERA:
+                                if command_tuple[2] == VISCA_FOCUS:
+                                        wait_time_ms = 100
+                                elif command_tuple[2] == VISCA_POWER:
+                                        wait_time_ms = 100
+                                elif command_tuple[2] == VISCA_WB:
+                                        wait_time_ms = 100
+                                elif command_tuple[2] == VISCA_FOCUS_AUTO:
+                                        wait_time_ms = 100
+                                elif command_tuple[2] == VISCA_FOCUS_TRIGGER:
+                                        wait_time_ms = 100
+                                elif command_tuple[2] == VISCA_RGAIN:
+                                        wait_time_ms = 10
+                                elif command_tuple[2] == VISCA_BGAIN:
+                                        wait_time_ms = 10
+                                elif command_tuple[2] == VISCA_ZOOM:
+                                        wait_time_ms = 10
+                                elif command_tuple[2] == VISCA_MEMORY and command_tuple[3] == VISCA_MEMORY_RECALL:
+                                        wait_time_ms = 50
+                                elif command_tuple[2] == VISCA_MEMORY and command_tuple[3] == VISCA_MEMORY_SET:
+                                        wait_time_ms = 500
+                        elif command_tuple[1] == VISCA_CATEGORY_PAN_TILTER:
+                                if command_tuple[2] == VISCA_PT_DRIVE:
+                                        wait_time_ms = 50
+                time_to_sleep = float(wait_time_ms - diff_ms) / 1000
+                if time_to_sleep > 0:
+                        time.sleep(time_to_sleep)
+
+                command_tuple = payload[0]
+                time_a = datetime.datetime.now()
+
         def send(self, *payload, **kwargs):
+                self.wait(payload)
+
                 with self.__send_lock:
                         # Send a command or request to the device
                         packet = Packet.from_parts(0, self.address, *payload)
