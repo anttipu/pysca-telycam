@@ -542,7 +542,9 @@ class Socket(object):
                                                 self.__waiting -= 1
                                                 wait = False
                                         else:
-                                                raise ViscaTimeoutError("Socket {} did not return an answer after {} seconds".format(self.__number, timeout))
+                                                self.clear()
+                                                self.packet_received = None
+                                                return self.packet_received
                                 elif self.__status == Socket.CLEARING:
                                         raise ViscaSocketStatusError("Socket {} is being cleared and can be no longer read"\
                                                                      .format(self.__number))
@@ -663,8 +665,8 @@ class Device(object):
                         packet = Packet.from_parts(0, self.address, *payload)
                         self.__sockets[0].wait_for_response(packet)
                         self.__send(packet)
-                        response = self.__sockets[0].get_response()
-                        if response.type == VISCA_RESPONSE_ACK and kwargs["blocking"]:
+                        response = self.__sockets[0].get_response(1)
+                        if response != None and response.type == VISCA_RESPONSE_ACK and kwargs["blocking"]:
                                 return self.__sockets[response.socket].get_response()
                         else:
                                 return response
@@ -996,13 +998,25 @@ def clear_commands(dest):
 
 
 def __cmd_cam(device, *parts, **kwargs):
-        return __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_CAMERA, *parts, **kwargs).parse_error()
+        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_CAMERA, *parts, **kwargs)
+        if retval == None:
+                return
+        else:
+                return retval.parse_error()
 
 def __cmd_pt(device, *parts, **kwargs):
-        return __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_PAN_TILTER, *parts, **kwargs).parse_error()
+        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_PAN_TILTER, *parts, **kwargs)
+        if retval == None:
+                return
+        else:
+                return retval.parse_error()
 
 def __cmd_dis(device, *parts, **kwargs):
-        return __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_DISPLAY, *parts, **kwargs).parse_error()
+        retval = __devices[device].send(VISCA_COMMAND, VISCA_CATEGORY_DISPLAY, *parts, **kwargs)
+        if retval == None:
+                return
+        else:
+                return retval.parse_error()
 
 
 # POWER control
